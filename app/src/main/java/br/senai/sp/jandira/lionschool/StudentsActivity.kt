@@ -5,33 +5,76 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import br.senai.sp.jandira.lionschool.model.Course
+import br.senai.sp.jandira.lionschool.model.CourseList
+import br.senai.sp.jandira.lionschool.model.Student
+import br.senai.sp.jandira.lionschool.model.StudentList
+import br.senai.sp.jandira.lionschool.service.RetrofitFactory
 import br.senai.sp.jandira.lionschool.ui.theme.LionSchoolTheme
+import coil.compose.AsyncImage
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class StudentsActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             LionSchoolTheme {
-                StudentScreen()
+                val siglaCurso = intent.getStringExtra("sigla")
+                StudentScreen(siglaCurso.toString())
             }
         }
     }
 }
 
 @Composable
-fun StudentScreen() {
+fun StudentScreen(curso: String) {
+
+    var listStudent by remember {
+        mutableStateOf(listOf<Student>())
+    }
+
+    var studentState by remember {
+        mutableStateOf(value = "")
+    }
+
+    var context = LocalContext.current
+
+    // Cria uma chamada para o endpoint
+    val call = RetrofitFactory().getStudentService().getStudentByCourse(curso)
+
+    // Executar a chamada
+    call.enqueue(object : Callback<StudentList> {
+        override fun onResponse(
+            call: Call<StudentList>,
+            response: Response<StudentList>
+        ) {
+            listStudent = response.body()!!.curso
+        }
+
+        override fun onFailure(call: Call<StudentList>, t: Throwable) {
+
+        }
+
+    })
+
     Surface(modifier = Modifier.fillMaxSize()) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -83,7 +126,7 @@ fun StudentScreen() {
                     shape = RoundedCornerShape(8.dp)
                 ) {
                     Text(
-                        text = "All",
+                        text = stringResource(id = R.string.button_all),
                         color = Color.White,
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold
@@ -95,7 +138,7 @@ fun StudentScreen() {
                     shape = RoundedCornerShape(8.dp)
                 ) {
                     Text(
-                        text = "Studying",
+                        text = stringResource(id = R.string.button_studying),
                         color = Color.White,
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold
@@ -103,47 +146,77 @@ fun StudentScreen() {
                 }
                 Button(
                     onClick = { /*TODO*/ },
-                    colors = ButtonDefaults.buttonColors(Color(229, 182, 87, 255)),
+                    colors = ButtonDefaults.buttonColors(Color(51, 71, 176, 255)),
                     shape = RoundedCornerShape(8.dp)
                 ) {
                     Text(
-                        text = "Finished",
+                        text = stringResource(id = R.string.button_finished),
                         color = Color.White,
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold
                     )
                 }
             }
-            Card(modifier = Modifier
-                .size(
-                    width = 200.dp,
-                    height = 300.dp
-                ),
-                backgroundColor = Color(51, 71, 176, 255)
-            ) {
-                Column() {
-                    Image(
-                        painter = painterResource(id = R.drawable.user),
-                        contentDescription = "",
-                        modifier = Modifier.size(220.dp)
-                    )
-                    Text(
-                        text = "HÉLIDA BENTO DE OLIVEIRA LINS",
-                        fontSize = 18.sp,
-                        fontWeight = FontWeight.Medium,
-                        color = Color.White,
-                        textAlign = TextAlign.Center
-                    )
+            LazyColumn() {
+                items(listStudent) {
+                    Card(
+                        modifier = Modifier
+                            .size(
+                                width = 200.dp,
+                                height = 300.dp
+                            ),
+                        backgroundColor = Color(51, 71, 176, 255)
+                    ) {
+                        Column() {
+                            AsyncImage(
+                                model = it.foto,
+                                contentDescription = "",
+                                modifier = Modifier.size(220.dp)
+                            )
+                            Text(
+                                text = it.nome,
+                                fontSize = 18.sp,
+                                fontWeight = FontWeight.Medium,
+                                color = Color.White,
+                                textAlign = TextAlign.Center
+                            )
+                        }
+                    }
+//                    Spacer(modifier = Modifier.height(48.dp))
+//                    Card(
+//                        modifier = Modifier
+//                            .size(
+//                                width = 200.dp,
+//                                height = 300.dp
+//                            ),
+//                        backgroundColor = Color(229, 182, 87, 255)
+//                    ) {
+//                        Column() {
+//                            Image(
+//                                painter = painterResource(id = R.drawable.user),
+//                                contentDescription = "",
+//                                modifier = Modifier.size(220.dp)
+//                            )
+//                            Text(
+//                                text = "HÉLIDA BENTO DE OLIVEIRA LINS",
+//                                fontSize = 18.sp,
+//                                fontWeight = FontWeight.Medium,
+//                                color = Color.White,
+//                                textAlign = TextAlign.Center
+//                            )
+//                        }
+//                    }
+//                    Spacer(modifier = Modifier.height(48.dp))
                 }
             }
         }
     }
 }
 
-@Preview(showBackground = true)
+@Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun DefaultPreview3() {
     LionSchoolTheme {
-        StudentScreen()
+        StudentScreen("")
     }
 }
