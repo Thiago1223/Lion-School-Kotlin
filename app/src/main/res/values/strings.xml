@@ -4,7 +4,7 @@
     <string name="button_started">Get Started</string>
     <string name="title_activity_course">CourseActivity</string>
     <string name="title_activity_students">StudentsActivity</string>
-    <string name="text_search">Search</string>
+    <string name="text_search">Search by years</string>
     <string name="text_course">Courses</string>
     <string name="button_all">All</string>
     <string name="button_studying">Studying</string>

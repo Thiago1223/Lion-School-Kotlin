@@ -8,6 +8,6 @@ import retrofit2.http.Query
 interface StudentService {
 
     @GET("alunos")
-    fun getStudentByCourse(@Query("curso") student: String): Call<StudentList>
+    fun getStudentByCourse(@Query("curso") siglaCurso: String): Call<StudentList>
 
 }

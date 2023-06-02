@@ -60,7 +60,7 @@ fun InfoScreen() {
             }
             Divider(
                 modifier = Modifier
-                    .width(280.dp)
+                    .fillMaxWidth()
                     .height(2.dp),
                 color = Color(51, 71, 176, 255)
             )
