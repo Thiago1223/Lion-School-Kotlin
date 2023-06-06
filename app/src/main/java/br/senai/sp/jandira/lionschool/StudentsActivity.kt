@@ -1,9 +1,12 @@
 package br.senai.sp.jandira.lionschool
 
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -38,14 +41,15 @@ class StudentsActivity : ComponentActivity() {
         setContent {
             LionSchoolTheme {
                 val siglaCurso = intent.getStringExtra("sigla")
-                StudentScreen(siglaCurso.toString())
+                val nomeCurso = intent.getStringExtra("nome")
+                StudentScreen(siglaCurso.toString(), nomeCurso.toString())
             }
         }
     }
 }
 
 @Composable
-fun StudentScreen(curso: String) {
+fun StudentScreen(curso: String, nomeCurso: String) {
 
     var listStudent by remember {
         mutableStateOf(listOf<Student>())
@@ -93,7 +97,7 @@ fun StudentScreen(curso: String) {
                     modifier = Modifier.size(100.dp)
                 )
                 Text(
-                    text = "Lion School",
+                    text = stringResource(id = R.string.app_name),
                     fontSize = 32.sp,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.width(100.dp),
@@ -107,7 +111,7 @@ fun StudentScreen(curso: String) {
                 color = Color(51, 71, 176, 255)
             )
             Text(
-                text = "Desenvolvimento de sistemas",
+                text = nomeCurso,
                 fontSize = 32.sp,
                 fontWeight = FontWeight.Medium,
                 textAlign = TextAlign.Center,
@@ -159,15 +163,26 @@ fun StudentScreen(curso: String) {
             }
             LazyColumn() {
                 items(listStudent) {
+                    var backgroundCard = Color(0, 0, 0)
+                    if (it.status == "Finalizado") {
+                        backgroundCard = Color(51, 71, 176, 255)
+                    } else {
+                        backgroundCard = Color(229, 182, 87, 255)
+                    }
                     Card(
                         modifier = Modifier
                             .size(
                                 width = 200.dp,
                                 height = 300.dp
-                            ),
-                        backgroundColor = Color(51, 71, 176, 255)
+                            )
+                            .clickable {
+                                var openInfo = Intent(context, InfoActivity::class.java)
+                                openInfo.putExtra("matricula", it.matricula)
+                                context.startActivity(openInfo)
+                            },
+                        backgroundColor = backgroundCard
                     ) {
-                        Column() {
+                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
                             AsyncImage(
                                 model = it.foto,
                                 contentDescription = "",
@@ -182,31 +197,7 @@ fun StudentScreen(curso: String) {
                             )
                         }
                     }
-//                    Spacer(modifier = Modifier.height(48.dp))
-//                    Card(
-//                        modifier = Modifier
-//                            .size(
-//                                width = 200.dp,
-//                                height = 300.dp
-//                            ),
-//                        backgroundColor = Color(229, 182, 87, 255)
-//                    ) {
-//                        Column() {
-//                            Image(
-//                                painter = painterResource(id = R.drawable.user),
-//                                contentDescription = "",
-//                                modifier = Modifier.size(220.dp)
-//                            )
-//                            Text(
-//                                text = "HÉLIDA BENTO DE OLIVEIRA LINS",
-//                                fontSize = 18.sp,
-//                                fontWeight = FontWeight.Medium,
-//                                color = Color.White,
-//                                textAlign = TextAlign.Center
-//                            )
-//                        }
-//                    }
-//                    Spacer(modifier = Modifier.height(48.dp))
+                    Spacer(modifier = Modifier.height(48.dp))
                 }
             }
         }
@@ -217,6 +208,6 @@ fun StudentScreen(curso: String) {
 @Composable
 fun DefaultPreview3() {
     LionSchoolTheme {
-        StudentScreen("")
+        StudentScreen("", "")
     }
 }

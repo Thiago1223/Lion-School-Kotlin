@@ -59,6 +59,24 @@ fun CourseScreen() {
 
     var context = LocalContext.current
 
+    // Cria uma chamada para o endpoint
+    val call = RetrofitFactory().getCourseService().getCourse()
+
+    // Executar a chamada
+    call.enqueue(object : Callback<CourseList> {
+        override fun onResponse(
+            call: Call<CourseList>,
+            response: Response<CourseList>
+        ) {
+            listCourse = response.body()!!.cursos
+        }
+
+        override fun onFailure(call: Call<CourseList>, t: Throwable) {
+
+        }
+
+    })
+
     Surface(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -120,23 +138,6 @@ fun CourseScreen() {
                 )
             }
             LazyColumn(){
-                // Cria uma chamada para o endpoint
-                val call = RetrofitFactory().getCourseService().getCourse()
-
-                // Executar a chamada
-                call.enqueue(object : Callback<CourseList> {
-                    override fun onResponse(
-                        call: Call<CourseList>,
-                        response: Response<CourseList>
-                    ) {
-                        listCourse = response.body()!!.cursos
-                    }
-
-                    override fun onFailure(call: Call<CourseList>, t: Throwable) {
-
-                    }
-
-                })
                 items(listCourse){
                     Spacer(modifier = Modifier.height(32.dp))
                     Card(
@@ -145,9 +146,10 @@ fun CourseScreen() {
                             .height(180.dp)
                             .clickable {
                                 var openStudents = Intent(context, StudentsActivity::class.java)
-                                context.startActivity(openStudents)
 
                                 openStudents.putExtra("sigla", it.sigla)
+                                openStudents.putExtra("nome", it.nome)
+                                context.startActivity(openStudents)
 
                             },
                         backgroundColor = Color(240, 242, 245, 255),
