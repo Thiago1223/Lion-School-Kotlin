@@ -98,7 +98,7 @@ fun WelcomeScreen() {
                 Image(
                     painter = painterResource(id = R.drawable.student),
                     contentDescription = "",
-                    modifier = Modifier.size(460.dp)
+                    modifier = Modifier.size(380.dp)
                 )
                 Spacer(modifier = Modifier.height(18.dp))
                 Button(

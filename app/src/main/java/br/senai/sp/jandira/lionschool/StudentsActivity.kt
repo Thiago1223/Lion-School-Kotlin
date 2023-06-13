@@ -55,7 +55,7 @@ fun StudentScreen(curso: String, nomeCurso: String) {
         mutableStateOf(listOf<Student>())
     }
 
-    var studentState by remember {
+    var studentsState by remember {
         mutableStateOf(value = "")
     }
 
@@ -111,16 +111,22 @@ fun StudentScreen(curso: String, nomeCurso: String) {
             }
             Divider(
                 modifier = Modifier
-                    .width(280.dp)
+                    .fillMaxWidth()
                     .height(2.dp),
                 color = Color(51, 71, 176, 255)
             )
             OutlinedTextField(
+<<<<<<< HEAD
                 value = studentState,
                 onValueChange = {studentState = it},
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 24.dp),
+=======
+                value = studentsState,
+                onValueChange = {studentsState = it},
+                modifier = Modifier.fillMaxWidth().padding(top = 24.dp),
+>>>>>>> edf63dfbd79312384d9813e53e987b9f09b542d0
                 label = {
                     Text(
                         text = stringResource(id = R.string.text_search),
@@ -200,24 +206,37 @@ fun StudentScreen(curso: String, nomeCurso: String) {
                 }
             }
             LazyColumn() {
+<<<<<<< HEAD
                 items(listStudentStatus) {
                     var backgroundCard = Color(0, 0, 0)
                     if (it.status == "Finalizado") {
                         backgroundCard = Color(229, 182, 87, 255)
                     } else {
                         backgroundCard = Color(51, 71, 176, 255)
+=======
+                items(listStudent) {
+                    var backgroundCard = Color(0, 0, 0)
+                    if (it.status == "Finalizado") {
+                        backgroundCard = Color(51, 71, 176, 255)
+                    } else {
+                        backgroundCard = Color(229, 182, 87, 255)
+>>>>>>> edf63dfbd79312384d9813e53e987b9f09b542d0
                     }
                     Card(
                         modifier = Modifier
                             .size(
                                 width = 200.dp,
                                 height = 300.dp
+<<<<<<< HEAD
                             )
                             .clickable {
                                 var openInfo = Intent(context, InfoActivity::class.java)
                                 openInfo.putExtra("matricula", it.matricula)
                                 context.startActivity(openInfo)
                             },
+=======
+                            ),
+>>>>>>> edf63dfbd79312384d9813e53e987b9f09b542d0
                         backgroundColor = backgroundCard
                     ) {
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
