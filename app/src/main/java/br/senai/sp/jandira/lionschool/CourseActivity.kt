@@ -81,7 +81,10 @@ fun CourseScreen() {
         modifier = Modifier.fillMaxSize()
     ) {
         Column(modifier = Modifier.padding(24.dp)) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.padding(bottom = 24.dp)
+            ) {
                 Image(
                     painter = painterResource(id = R.drawable.logo_image),
                     contentDescription = "",
@@ -95,30 +98,11 @@ fun CourseScreen() {
                     color = Color(51, 71, 176, 255)
                 )
             }
-            OutlinedTextField(
-                value = courseState,
-                onValueChange = {courseState = it},
-                modifier = Modifier.fillMaxWidth(),
-                label = {
-                    Text(
-                        text = stringResource(id = R.string.text_search),
-                        fontSize = 20.sp,
-                        color = Color(128, 128, 128, 255))},
-                colors = TextFieldDefaults.outlinedTextFieldColors(
-                    backgroundColor = Color(240, 242, 245, 255),
-                    unfocusedBorderColor = Color.White,
-                    focusedBorderColor = Color.White
-                ),
-                shape = RoundedCornerShape(8.dp),
-                leadingIcon = {
-                    Image(
-                        painter = painterResource(id = R.drawable.search),
-                        contentDescription = "",
-                        modifier = Modifier
-                            .size(20.dp)
-                            .clickable {}
-                    )
-                }
+            Divider(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(2.dp),
+                color = Color(51, 71, 176, 255)
             )
             Row(
                 verticalAlignment = Alignment.CenterVertically,

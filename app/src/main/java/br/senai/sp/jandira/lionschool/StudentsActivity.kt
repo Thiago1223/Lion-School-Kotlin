@@ -59,6 +59,10 @@ fun StudentScreen(curso: String, nomeCurso: String) {
         mutableStateOf(value = "")
     }
 
+    var listStudentStatus by remember {
+        mutableStateOf(listOf<Student>())
+    }
+
     var context = LocalContext.current
 
     // Cria uma chamada para o endpoint
@@ -71,6 +75,7 @@ fun StudentScreen(curso: String, nomeCurso: String) {
             response: Response<StudentList>
         ) {
             listStudent = response.body()!!.curso
+            listStudentStatus = response.body()!!.curso
         }
 
         override fun onFailure(call: Call<StudentList>, t: Throwable) {
@@ -110,6 +115,33 @@ fun StudentScreen(curso: String, nomeCurso: String) {
                     .height(2.dp),
                 color = Color(51, 71, 176, 255)
             )
+            OutlinedTextField(
+                value = studentState,
+                onValueChange = {studentState = it},
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 24.dp),
+                label = {
+                    Text(
+                        text = stringResource(id = R.string.text_search),
+                        fontSize = 20.sp,
+                        color = Color(128, 128, 128, 255))},
+                colors = TextFieldDefaults.outlinedTextFieldColors(
+                    backgroundColor = Color(240, 242, 245, 255),
+                    unfocusedBorderColor = Color.White,
+                    focusedBorderColor = Color.White
+                ),
+                shape = RoundedCornerShape(8.dp),
+                leadingIcon = {
+                    Image(
+                        painter = painterResource(id = R.drawable.search),
+                        contentDescription = "",
+                        modifier = Modifier
+                            .size(20.dp)
+                            .clickable {}
+                    )
+                }
+            )
             Text(
                 text = nomeCurso,
                 fontSize = 32.sp,
@@ -125,7 +157,9 @@ fun StudentScreen(curso: String, nomeCurso: String) {
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Button(
-                    onClick = { /*TODO*/ },
+                    onClick = {
+                              listStudentStatus = listStudent
+                    },
                     colors = ButtonDefaults.buttonColors(Color(51, 71, 176, 255)),
                     shape = RoundedCornerShape(8.dp)
                 ) {
@@ -137,7 +171,9 @@ fun StudentScreen(curso: String, nomeCurso: String) {
                     )
                 }
                 Button(
-                    onClick = { /*TODO*/ },
+                    onClick = {
+                              listStudentStatus = listStudent.filter { it.status == "Cursando" }
+                    },
                     colors = ButtonDefaults.buttonColors(Color(51, 71, 176, 255)),
                     shape = RoundedCornerShape(8.dp)
                 ) {
@@ -149,8 +185,10 @@ fun StudentScreen(curso: String, nomeCurso: String) {
                     )
                 }
                 Button(
-                    onClick = { /*TODO*/ },
-                    colors = ButtonDefaults.buttonColors(Color(51, 71, 176, 255)),
+                    onClick = {
+                        listStudentStatus = listStudent.filter { it.status == "Finalizado" }
+                    },
+                    colors = ButtonDefaults.buttonColors(Color(229, 182, 87, 255)),
                     shape = RoundedCornerShape(8.dp)
                 ) {
                     Text(
@@ -162,12 +200,12 @@ fun StudentScreen(curso: String, nomeCurso: String) {
                 }
             }
             LazyColumn() {
-                items(listStudent) {
+                items(listStudentStatus) {
                     var backgroundCard = Color(0, 0, 0)
                     if (it.status == "Finalizado") {
-                        backgroundCard = Color(51, 71, 176, 255)
-                    } else {
                         backgroundCard = Color(229, 182, 87, 255)
+                    } else {
+                        backgroundCard = Color(51, 71, 176, 255)
                     }
                     Card(
                         modifier = Modifier
