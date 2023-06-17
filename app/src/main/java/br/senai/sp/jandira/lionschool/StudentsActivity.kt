@@ -12,6 +12,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
+import androidx.compose.material.SnackbarDefaults.backgroundColor
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -116,22 +117,17 @@ fun StudentScreen(curso: String, nomeCurso: String) {
                 color = Color(51, 71, 176, 255)
             )
             OutlinedTextField(
-<<<<<<< HEAD
-                value = studentState,
-                onValueChange = {studentState = it},
+                value = studentsState,
+                onValueChange = {studentsState = it},
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 24.dp),
-=======
-                value = studentsState,
-                onValueChange = {studentsState = it},
-                modifier = Modifier.fillMaxWidth().padding(top = 24.dp),
->>>>>>> edf63dfbd79312384d9813e53e987b9f09b542d0
                 label = {
                     Text(
                         text = stringResource(id = R.string.text_search),
                         fontSize = 20.sp,
-                        color = Color(128, 128, 128, 255))},
+                        color = Color(128, 128, 128, 255))
+                },
                 colors = TextFieldDefaults.outlinedTextFieldColors(
                     backgroundColor = Color(240, 242, 245, 255),
                     unfocusedBorderColor = Color.White,
@@ -206,37 +202,24 @@ fun StudentScreen(curso: String, nomeCurso: String) {
                 }
             }
             LazyColumn() {
-<<<<<<< HEAD
                 items(listStudentStatus) {
                     var backgroundCard = Color(0, 0, 0)
                     if (it.status == "Finalizado") {
                         backgroundCard = Color(229, 182, 87, 255)
                     } else {
                         backgroundCard = Color(51, 71, 176, 255)
-=======
-                items(listStudent) {
-                    var backgroundCard = Color(0, 0, 0)
-                    if (it.status == "Finalizado") {
-                        backgroundCard = Color(51, 71, 176, 255)
-                    } else {
-                        backgroundCard = Color(229, 182, 87, 255)
->>>>>>> edf63dfbd79312384d9813e53e987b9f09b542d0
                     }
                     Card(
                         modifier = Modifier
                             .size(
                                 width = 200.dp,
                                 height = 300.dp
-<<<<<<< HEAD
                             )
                             .clickable {
                                 var openInfo = Intent(context, InfoActivity::class.java)
                                 openInfo.putExtra("matricula", it.matricula)
                                 context.startActivity(openInfo)
                             },
-=======
-                            ),
->>>>>>> edf63dfbd79312384d9813e53e987b9f09b542d0
                         backgroundColor = backgroundCard
                     ) {
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {

@@ -128,10 +128,7 @@ fun CourseScreen() {
                                 var openStudents = Intent(context, StudentsActivity::class.java)
 
                                 openStudents.putExtra("sigla", it.sigla)
-<<<<<<< HEAD
                                 openStudents.putExtra("nome", it.nome)
-=======
->>>>>>> edf63dfbd79312384d9813e53e987b9f09b542d0
                                 context.startActivity(openStudents)
 
                             },
