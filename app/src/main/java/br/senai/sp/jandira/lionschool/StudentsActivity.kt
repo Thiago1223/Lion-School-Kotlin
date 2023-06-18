@@ -2,7 +2,6 @@ package br.senai.sp.jandira.lionschool
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
@@ -13,7 +12,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
-import androidx.compose.material.SnackbarDefaults.backgroundColor
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -27,10 +25,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import br.senai.sp.jandira.lionschool.model.Course
-import br.senai.sp.jandira.lionschool.model.CourseList
 import br.senai.sp.jandira.lionschool.model.Student
 import br.senai.sp.jandira.lionschool.model.StudentList
+import br.senai.sp.jandira.lionschool.model.Students
 import br.senai.sp.jandira.lionschool.service.RetrofitFactory
 import br.senai.sp.jandira.lionschool.ui.theme.LionSchoolTheme
 import coil.compose.AsyncImage
@@ -55,7 +52,7 @@ class StudentsActivity : ComponentActivity() {
 fun StudentScreen(curso: String, nomeCurso: String) {
 
     var listStudent by remember {
-        mutableStateOf(listOf<Student>())
+        mutableStateOf(listOf<Students>())
     }
 
     var studentsState by remember {
@@ -63,7 +60,7 @@ fun StudentScreen(curso: String, nomeCurso: String) {
     }
 
     var listStudentStatus by remember {
-        mutableStateOf(listOf<Student>())
+        mutableStateOf(listOf<Students>())
     }
 
     var context = LocalContext.current
@@ -77,8 +74,8 @@ fun StudentScreen(curso: String, nomeCurso: String) {
             call: Call<StudentList>,
             response: Response<StudentList>
         ) {
-            listStudent = response.body()!!.curso
-            listStudentStatus = response.body()!!.curso
+            listStudent = response.body()!!.alunos
+            listStudentStatus = response.body()!!.alunos
         }
 
         override fun onFailure(call: Call<StudentList>, t: Throwable) {
@@ -147,7 +144,7 @@ fun StudentScreen(curso: String, nomeCurso: String) {
                         modifier = Modifier
                             .size(20.dp)
                             .clickable {
-                                listStudentStatus = listStudent.filter { it.ano == "$studentsState" }
+                                listStudentStatus = listStudent.filter { it.curso[0].conclusao == "$studentsState" }
 
                                 if(studentsState == ""){
                                     listStudentStatus = listStudent

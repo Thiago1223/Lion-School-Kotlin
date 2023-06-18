@@ -2,7 +2,6 @@ package br.senai.sp.jandira.lionschool
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.BorderStroke
@@ -21,13 +20,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import br.senai.sp.jandira.lionschool.model.Course
-import br.senai.sp.jandira.lionschool.model.CourseList
-import br.senai.sp.jandira.lionschool.service.RetrofitFactory
 import br.senai.sp.jandira.lionschool.ui.theme.LionSchoolTheme
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

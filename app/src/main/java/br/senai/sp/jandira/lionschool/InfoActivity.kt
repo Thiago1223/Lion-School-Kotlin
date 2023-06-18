@@ -1,33 +1,40 @@
 package br.senai.sp.jandira.lionschool
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import br.senai.sp.jandira.lionschool.R
-import br.senai.sp.jandira.lionschool.model.Course
-import br.senai.sp.jandira.lionschool.model.InfoList
 import br.senai.sp.jandira.lionschool.model.Student
-import br.senai.sp.jandira.lionschool.model.StudentList
 import br.senai.sp.jandira.lionschool.service.RetrofitFactory
-import br.senai.sp.jandira.lionschool.ui.theme.ui.theme.LionSchoolTheme
+import br.senai.sp.jandira.lionschool.ui.theme.LionSchoolTheme
 import coil.compose.AsyncImage
 import retrofit2.Call
 import retrofit2.Callback
@@ -39,37 +46,38 @@ class InfoActivity : ComponentActivity() {
         setContent {
             LionSchoolTheme {
                 val matriculaAluno = intent.getStringExtra("matricula")
-                InfoScreen(matriculaAluno.toString())
+                StudentScreen(matriculaAluno.toString())
             }
         }
     }
 }
 
+
 @Composable
-fun InfoScreen(matricula: String) {
+fun StudentScreen(matricula: String) {
+    val context = LocalContext.current
 
     var listStudent by remember {
-        mutableStateOf(listOf<Student>())
+        mutableStateOf(Student("", "", "", "", emptyList()))
     }
 
-    var context = LocalContext.current
-
-    // Cria uma chamada para o endpoint
     val call = RetrofitFactory().getInfoService().getStudentbyMatricula(matricula)
 
-    // Executar a chamada
-    call.enqueue(object : Callback<InfoList> {
-        override fun onResponse(
-            call: Call<InfoList>,
-            response: Response<InfoList>
-        ) {
-            listStudent = response.body()!!.aluno
+    call.enqueue(object : Callback<Student> {
+        override fun onResponse(call: Call<Student>, response: Response<Student>) {
+            if (response.isSuccessful) {
+                val studentResponse = response.body()
+                if (studentResponse != null) {
+                    listStudent = studentResponse
+                }
+            } else {
+                Log.e("teste", "Erro na resposta da API: ${response.code()}")
+            }
         }
 
-        override fun onFailure(call: Call<InfoList>, t: Throwable) {
-
+        override fun onFailure(call: Call<Student>, t: Throwable) {
+            Log.i("teste", "onFailure: ${t.message} ")
         }
-
     })
 
     Surface(modifier = Modifier.fillMaxSize()) {
@@ -114,14 +122,14 @@ fun InfoScreen(matricula: String) {
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center
                 ) {
-                    items(listStudent) {
+                    items(listStudent.curso) {
                         AsyncImage(
-                            model = it.foto,
+                            model = listStudent.foto,
                             contentDescription = "",
                             modifier = Modifier.size(240.dp)
                         )
                         Text(
-                            text = it.nome,
+                            text = listStudent.nome,
                             fontSize = 18.sp,
                             fontWeight = FontWeight.Medium,
                             color = Color(51, 71, 176, 255),
@@ -130,14 +138,61 @@ fun InfoScreen(matricula: String) {
                     }
                 }
             }
-        }
-    }
-}
+            Spacer(modifier = Modifier.height(24.dp))
+            LazyColumn(modifier = Modifier.fillMaxWidth()) {
+                items(listStudent.curso.getOrNull(0)?.disciplinas.orEmpty()) {
 
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
-fun DefaultPreview4() {
-    LionSchoolTheme {
-        InfoScreen("")
+                    var barra = 2.4 * it.media.toDouble()
+                    var corBarra = Color.White
+
+                    if (it.media.toDouble() > 60) {
+                        corBarra = Color(51, 71, 176, 255)
+                    } else if (it.media.toDouble() >= 50) {
+                        corBarra = Color(229, 182, 87, 255)
+                    } else if (it.media.toDouble() < 50) {
+                        corBarra = Color(193, 16, 16, 255)
+                    }
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = it.sigla,
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color(51, 71, 176, 255)
+                        )
+                        Box(
+                            modifier = Modifier
+                                .height(16.dp)
+                                .width(220.dp)
+                                .background(Color(238, 239, 248, 255))
+                        ) {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxHeight()
+                                    .width(barra.dp)
+                                    .clip(
+                                        shape = RoundedCornerShape(
+                                            topEnd = 4.dp,
+                                            bottomEnd = 4.dp
+                                        )
+                                    )
+                                    .background(corBarra)
+                            )
+                        }
+                        Text(
+                            text = it.media,
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = corBarra
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(8.dp))
+                }
+            }
+        }
     }
 }

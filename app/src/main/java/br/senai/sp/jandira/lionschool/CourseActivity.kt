@@ -2,8 +2,6 @@ package br.senai.sp.jandira.lionschool
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
-import android.widget.Button
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.BorderStroke
@@ -26,7 +24,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import br.senai.sp.jandira.lionschool.model.Course
+import br.senai.sp.jandira.lionschool.model.Courses
 import br.senai.sp.jandira.lionschool.model.CourseList
 import br.senai.sp.jandira.lionschool.service.RetrofitFactory
 import br.senai.sp.jandira.lionschool.ui.theme.LionSchoolTheme
@@ -50,7 +48,7 @@ class CourseActivity : ComponentActivity() {
 fun CourseScreen() {
 
     var listCourse by remember {
-        mutableStateOf(listOf<Course>())
+        mutableStateOf(listOf<Courses>())
     }
 
     var context = LocalContext.current
@@ -155,13 +153,6 @@ fun CourseScreen() {
                                 text = it.nome,
                                 fontSize = 20.sp,
                                 fontWeight = FontWeight.Bold,
-                                textAlign = TextAlign.Center
-                            )
-                            Text(
-                                text = it.carga,
-                                fontSize = 16.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = Color(128, 128, 128, 255),
                                 textAlign = TextAlign.Center
                             )
                         }

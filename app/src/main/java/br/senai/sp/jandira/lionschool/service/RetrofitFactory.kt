@@ -5,7 +5,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 class RetrofitFactory {
 
-    private val BASE_URL = "https://apilionschool.cyclic.app/v1/lion-school/"
+    private val BASE_URL = "https://lion-school-2023.cyclic.app/v1/lion-school/"
 
     private val retrofitFactory = Retrofit
         .Builder()
@@ -22,6 +22,10 @@ class RetrofitFactory {
     }
 
     fun getInfoService(): InfoService {
+        return retrofitFactory.create(InfoService::class.java)
+    }
+
+    fun getNoteStudentService(): InfoService{
         return retrofitFactory.create(InfoService::class.java)
     }
 
